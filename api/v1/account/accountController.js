@@ -21,6 +21,7 @@ exports.getBalance = async (ctx) => {
 exports.createAccount = async (ctx) => {
     const account = web3.eth.accounts.create();
     try {
+        ctx.status = 201;
         ctx.body = {
             address: account.address,
             private_key: account.privateKey
