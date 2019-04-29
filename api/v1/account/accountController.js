@@ -17,3 +17,18 @@ exports.getBalance = async (ctx) => {
         });
     }
 };
+
+exports.createAccount = async (ctx) => {
+    const account = web3.eth.accounts.create();
+    try {
+        ctx.body = {
+            address: account.address,
+            private_key: account.privateKey
+        };
+    } catch (e) {
+        ctx.throw(500, {
+            success: false,
+            message: e.toString()
+        });
+    }
+};
