@@ -1,0 +1,171 @@
+openapi: 3.0.0
+info:
+  title: WorldBit Wallet API
+  description: WorldBit Wallet API for WebChain
+  contact:
+    email: jin@worldbit.com
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/dev-l33/WorldBitWalletAPI/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: https://wallet.worldbit.com/api/v1
+  description: WorldBit Wallet API Server
+tags:
+- name: public
+  description: Public API end points
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /account/create:
+    get:
+      tags:
+      - public
+      summary: Create a wallet, private key/public key pair.
+      description: |
+        Create a WebChain wallet and return address and private key
+      operationId: createWallet
+      responses:
+        201:
+          description: wallet created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+        500:
+          description: Internal Server Error
+  /account/balance/{address}:
+    get:
+      tags:
+      - public
+      summary: Check Wallet Balance
+      description: |
+        Check WBT Token and Webchain balance of given wallet address.
+      operationId: getBalance
+      parameters:
+      - name: address
+        in: path
+        description: wallet address
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        200:
+          description: account balance returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Balance'
+        500:
+          description: Internal Server Error
+  /transaction/transfer:
+    post:
+      tags:
+      - public
+      summary: transfer webchain to another wallet address
+      description: |
+        transfer webchain to another wallet address
+      operationId: transfer
+      requestBody:
+        description: transfer webchain
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferRequetBody'
+      responses:
+        200:
+          description: Successfully transferred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferResponseBody'
+        500:
+          description: Internal Server Error
+  /transaction/transferToken:
+    post:
+      tags:
+      - public
+      summary: transfer WorldBitToken to another wallet address
+      description: |
+        transfer WorldBit Token to another wallet address
+      operationId: transferToken
+      requestBody:
+        description: transfer WorldBitToken
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferRequetBody'
+      responses:
+        200:
+          description: Successfully transferred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferResponseBody'
+        500:
+          description: Internal Server Error
+components:
+  schemas:
+    Wallet:
+      required:
+      - address
+      - private_key
+      type: object
+      properties:
+        address:
+          type: string
+          example: 0xB6c001452D83Bc2aC45d507dE88a96ae66863F15
+        private_key:
+          type: string
+          example: 0x8b6b0855c23ba6524c78642749c3bb295ca842c0a0814e3fad8da5d5c4e0b938
+    Balance:
+      required:
+      - token
+      - web
+      type: object
+      properties:
+        web:
+          type: number
+          example: 10.8917566
+        token:
+          type: number
+          example: 1000.9936662
+    TransferRequetBody:
+      required:
+      - fromAddress
+      - privateKey
+      - toAddress
+      - value
+      type: object
+      properties:
+        fromAddress:
+          type: string
+          example: 0xB6c001452D83Bc2aC45d507dE88a96ae66863F15
+        privateKey:
+          type: string
+          example: 0x8b6b0855c23ba6524c78642749c3bb295ca842c0a0814e3fad8da5d5c4e0b938
+        toddress:
+          type: string
+          example: 0xe6710b75a5b7df6e0047a40eba8c2415bace872d
+        value:
+          type: number
+          example: 1000.85
+    TransferResponseBody:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        fromAddress:
+          type: string
+          example: 0xB6c001452D83Bc2aC45d507dE88a96ae66863F15
+        toddress:
+          type: string
+          example: 0xe6710b75a5b7df6e0047a40eba8c2415bace872d
+        value:
+          type: number
+          example: 1000.85
+        transactionHash:
+          type: string
+          example: 0x91f80bbc62f145393e250cf74afd412f7c7c938de2585a22364adadbd0c64c76
